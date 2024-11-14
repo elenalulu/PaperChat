@@ -7,7 +7,7 @@ PaperChat, provide quantized models to chat wtih arXiv papers, in order to run o
 https://modelscope.cn/models/QuantFactory/Qwen2.5-7B-Instruct-GGUF/resolve/master/Qwen2.5-7B-Instruct.Q4_K_M.gguf
 
 
-2.#unzip llama_cpp.rar under the master path:
+2.unzip llama_cpp.rar under the master path:
 
 cd llama_cpp
 
@@ -15,7 +15,7 @@ llama-server.exe -m ../Qwen2.5-7B-Instruct.Q4_K_M.gguf -c 2048
 
 
 
-3.#start another terminal:
+3.start another terminal:
 
 cd chat_ui
 
