@@ -7,10 +7,13 @@ PaperChat, provide quantized models to chat wtih arXiv papers, in order to run o
 
 2.start llama.cpp as:
 
+cd llama.cpp
+
 llama-server.exe -m ../Qwen2.5-7B-Instruct.Q4_K_M.gguf -c 2048
 
 
 3.run chat ui:
 
 cd chat_ui
+
 python main.py
