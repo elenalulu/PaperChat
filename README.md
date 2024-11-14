@@ -3,6 +3,7 @@ PaperChat, provide quantized models to chat wtih arXiv papers, in order to run o
 
 
 1.download gguf model from: 
+
 https://modelscope.cn/models/QuantFactory/Qwen2.5-7B-Instruct-GGUF/resolve/master/Qwen2.5-7B-Instruct.Q4_K_M.gguf
 
 
