@@ -1,5 +1,5 @@
 # PaperChat
-PaperChat, provide quantized models to chat wtih arXiv papers, in order to run on cpu machines. Combining paper understanding and research on mutiple papers.
+PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu machines. Combining paper understanding and research on mutiple papers. Compiled llama.cpp already. 
 
 
 1.download gguf model under the master path: 
