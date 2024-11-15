@@ -5,12 +5,12 @@ PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu mac
 
 ## Requirements
 
-1.download gguf model under the master path: 
+1.download gguf model and put it under the master path: 
 
 https://modelscope.cn/models/QuantFactory/Qwen2.5-7B-Instruct-GGUF/resolve/master/Qwen2.5-7B-Instruct.Q4_K_M.gguf
 
 
-2.unzip llama_cpp.rar under the master path:
+2.unzip llama_cpp.rar and put it under the master path:
 
 ```shell
 cd llama_cpp
