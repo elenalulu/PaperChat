@@ -15,9 +15,7 @@ client = openai.OpenAI(
 
 def judge_chat(query):
 
-	content =  query + '。判断上面的是日常对话吗。是的话直接输出回答，不是的话输出否'
-	print (content)
-
+	content =  query 
 	completion = client.chat.completions.create(
 	model="",
 	messages=[
@@ -28,10 +26,11 @@ def judge_chat(query):
 	answer = re.findall(r"content='(.+?)'", str(output))
 	answer = '' .join(answer)
 	answer = str(answer)
+	print (answer)
 
 	if '否' not in answer:
 		content =  '记住你现在的名字叫来藤。回答：' + query
-		print (content)
+		# print (content)
 
 		completion = client.chat.completions.create(
 		model="",
@@ -43,6 +42,7 @@ def judge_chat(query):
 		answer = re.findall(r"content='(.+?)'", str(output))
 		answer = '' .join(answer)
 		answer = str(answer)
+		print (answer)
 		judge_answer = answer
 
 	else:
@@ -64,15 +64,13 @@ def language_qa(query):
 		print (each_pdf)
 
 		with pdfplumber.open(each_pdf) as pdf:
-			count = 0
 			total_content = ''
 			for page in pdf.pages: #加：判断和问题相关度
 				print (page)
-				count += 1
 				wholepage = page.extract_text()
 				wholepage = wholepage.replace('\n','').replace(' ','')
 
-				if count <= 3:
+				if len(total_content) < 1000:
 					total_content += wholepage + '\n'
 				else:
 					break
@@ -201,15 +199,8 @@ def home():
 def get_doc_response():
 	query = request.args.get('msg')
 
-	#判断对话
-	judge_answer = judge_chat(query)
-	if judge_answer != '否':
-		output = judge_answer
-		pdf_single = ''
 	
-	#文字理解
-	else:
-		output, pdf_single = language_qa(query)
+	output, pdf_single = language_qa(query)
 
 	#互联网查询
 	internet = ''
