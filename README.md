@@ -1,8 +1,8 @@
-[**🇨🇳中文**](https://github.com/shibing624/text2vec/blob/master/README_CN.md)
+[**🇨🇳中文**](https://github.com/elenalulu/PaperChat/blob/master/README_CN.md)
 
 
 <div align="center">
-  <a href="https://github.com/elenalulu/blob/master/PaperChat">
+  <a href="https://github.com/elenalulu/PaperChat">
     <img src="https://github.com/elenalulu/PaperChat/blob/master/logo.png" height="150" alt="Logo">
   </a>
 </div>
