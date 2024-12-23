@@ -1,10 +1,10 @@
 [**🇨🇳中文**](https://github.com/elenalulu/PaperChat/blob/master/README_CN.md)
 
 
-<div align="center">
-	<a>
-  <img alt="Logo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" width="860" />
-  </a>
+<div>
+	<p align="center">
+  <img alt="Animation Demo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" width="860" />
+  </p>
 </div>
 
 -----------------
