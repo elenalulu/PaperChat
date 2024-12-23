@@ -2,7 +2,9 @@
 
 
 <div align="center">
-  <img alt="Logo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" height="150" />
+	<a>
+  <img alt="Logo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" width="860" />
+  </a>
 </div>
 
 -----------------
