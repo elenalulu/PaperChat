@@ -59,9 +59,9 @@ python main.py
 
 ## License
 
-
-授权协议为 [The Apache License 2.0](LICENSE)，可免费用做商业用途。请在产品说明中附加ChatPDF的链接和授权协议。
+The product is licensed under The Apache License 2.0, which allows for free commercial use. Please include the link to PaperChat and the licensing terms in your product description.
 
 
 ## Contribute
-项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目。
+
+The project code is still quite raw. If anyone makes improvements to the code, we welcome contributions back to this project.
