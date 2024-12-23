@@ -2,8 +2,8 @@
 
 
 <div align="center">
-  <a href="https://github.com/elenalulu/PaperChat">
-    <img src="https://github.com/elenalulu/PaperChat/logo.png" height="150" alt="Logo">
+  <a href="https://github.com/elenalulu/blob/master/PaperChat">
+    <img src="https://github.com/elenalulu/PaperChat/blob/master/logo.png" height="150" alt="Logo">
   </a>
 </div>
 
