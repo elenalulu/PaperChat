@@ -3,7 +3,7 @@
 
 <div>
 	<p align="center">
-  <img alt="Animation Demo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" width="860" />
+  <img alt="Animation Demo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/logo.png" width="660" />
   </p>
 </div>
 
