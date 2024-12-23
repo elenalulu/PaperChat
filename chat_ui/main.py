@@ -1,21 +1,26 @@
 # coding: utf-8
 from flask import Flask, render_template, request
-import os, time, re, datetime
+import os, time, re, datetime, shutil
 import openai
 import pdfplumber
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
+from collections import Counter
+import fitz 
 
 
 client = openai.OpenAI(
-	base_url="http://localhost:8080/v1", # "http://<Your api-server IP>:port"
+	base_url="http://localhost:8080/v1", 
 	api_key = "no-key-required"
 )
 
 
-def judge_chat(query):
-
-	content =  query 
+def pdf_url(query): 
+	http_pdf = ''
+		
+	#which paper
+	content =  query + '. give the keyword of the above query as the format:keyword1&keyword2&keyword3'
 	completion = client.chat.completions.create(
 	model="",
 	messages=[
@@ -26,56 +31,70 @@ def judge_chat(query):
 	answer = re.findall(r"content='(.+?)'", str(output))
 	answer = '' .join(answer)
 	answer = str(answer)
+	answer = answer.lower()
 	print (answer)
 
-	if '否' not in answer:
-		content =  '记住你现在的名字叫来藤。回答：' + query
-		# print (content)
 
-		completion = client.chat.completions.create(
-		model="",
-		messages=[
-			{"role": "user", "content": content}
-		]
-		)
-		output = completion.choices[0].message
-		answer = re.findall(r"content='(.+?)'", str(output))
-		answer = '' .join(answer)
-		answer = str(answer)
-		print (answer)
-		judge_answer = answer
+	keyword_csv = '../label_keyword.csv'
+	df = pd.read_csv(keyword_csv)
 
-	else:
-		judge_answer = '否'
+	query_keyword_list = answer.split('&')
+	label_keyword_total = []
+	for query_keyword in query_keyword_list:
 
-	return judge_answer
+		results = df[df['keyword'] == query_keyword]
+		if 'Empty DataFrame' not in str(results):
+			for i in range(0, len(results)):
+				oneline = results[i:(i+1)]
+				label = oneline['label'].values 
+				label = str(label)
+				label = label.replace('[','').replace(']','')
+
+				label_keyword_dict = {'label': label, 'keyword': query_keyword}
+				label_keyword_total.append(label_keyword_dict)
+				
+
+	counts = Counter([item['label'] for item in label_keyword_total])
+
+	most_label = counts.most_common(1)
+	most_label = most_label[0]
+	most_label = most_label[0]
+	most_label = most_label.replace("'",'')
+
+	#request content
+	http_pdf = 'https://arxiv.org/pdf/' + most_label
+	print (http_pdf)
+
+	dialoge = 'please refer to the paper first→'
+
+	return http_pdf, query_keyword_list, dialoge
 
 
-
-def language_qa(query): 
-	def get_files_list(directory):
-		return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
-
-	directory = './static/local_document/'   
-	files_list = get_files_list(directory)
-
+def language_qa(query, http_pdf, query_keyword_list): 
 	final_answer = ''
-	for each_pdf in files_list:
-		print (each_pdf)
+	response = requests.get(http_pdf)
+	 
+	page_contents = []
+	if response.status_code == 200:
+	    pdf_data = response.content
+	    pdf_document = fitz.open("pdf", pdf_data)
+	    
+	    for page_num in range(len(pdf_document)):
+	        page = pdf_document.load_page(page_num)
+	        text = page.get_text()  
+	        page_contents.append(text)
 
-		with pdfplumber.open(each_pdf) as pdf:
-			total_content = ''
-			for page in pdf.pages: #加：判断和问题相关度
-				print (page)
-				wholepage = page.extract_text()
-				wholepage = wholepage.replace('\n','').replace(' ','')
 
-				if len(total_content) < 1000:
-					total_content += wholepage + '\n'
-				else:
-					break
+	useful_articles = ''
+	for query_keyword in query_keyword_list:
+		for article in page_contents:
+			if query_keyword in article and article not in useful_articles:
+				if len(useful_articles) < 3000: #control length
+					useful_articles += article
 
-	content =  total_content + '。answer according to the above content：' + query
+
+	useful_articles = useful_articles.lower()
+	content = useful_articles + '。answer according to the above content：' + query
 	print (content)
 
 	completion = client.chat.completions.create(
@@ -90,14 +109,9 @@ def language_qa(query):
 	answer = str(answer)
 
 	if answer != '':
-		split_list = answer.split('.')
-		revised_list = split_list[:-1]
-		
-		for item in revised_list:
-			item = item.replace('\\n','<br>')
-			final_answer =  final_answer + item + '.'
+		final_answer =  answer.replace('\\n','<br>')
 
-	return final_answer, each_pdf
+	return final_answer
 
 
 def internet_result(query):
@@ -195,19 +209,27 @@ def home():
 	return render_template("index.html")
 
 
+
+@app.route("/url")
+def get_pdf_url():
+	query = request.args.get('msg')
+	http_pdf, query_keyword_list, dialoge = pdf_url(query)
+
+	internet = ''
+	if http_pdf == 'none':
+		internet = internet_result(query)
+
+	return [http_pdf, query_keyword_list, dialoge, internet]
+
+
+
 @app.route("/qa")
 def get_doc_response():
 	query = request.args.get('msg')
+	http_pdf, query_keyword_list, dialoge = pdf_url(query)
+	output = language_qa(query, http_pdf, query_keyword_list) 
 
-	
-	output, pdf_single = language_qa(query)
-
-	#互联网查询
-	internet = ''
-	if pdf_single == 'none':
-		internet = internet_result(query)
-
-	return [output, pdf_single, internet]
+	return [output]
 
 
 		

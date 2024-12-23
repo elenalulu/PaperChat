@@ -42,8 +42,7 @@
         <div  class="left col-5 px-5 py-5 chat-box js-chat-board bg-white">
           <div class="media w-90 mb-1"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle">
             <div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p><a>
-            请说出您的问题<br>
-            将在右边展示资料来源^^
+            your question, please~
           </p></a></div></div></div>
         </div>
 
@@ -74,21 +73,20 @@
           $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
 
 
-          $.get("/qa", { msg: rawText }).done(function(data) {
-            answer = data[0];
-            pdf_doc = data[1];
-            internet = data[2];
-            console.log(answer)
-
-            var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
-            $botHtml.find('p').html(answer);
-            $chatlog.append($botHtml);
-
-
+          $.get("/url", { msg: rawText }).done(function(data) {
+            pdf_doc = data[0];
+            dialoge = data[2]
+            internet = data[3];
+          
             pdf_depth = '<embed width="100%" height="100%" src="' + pdf_doc + '"></embed>' 
             internet_result = $('<div class="ml-4"><div class="py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left" ></p></div></div>');
+
+            var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
+            $botHtml.find('p').html(dialoge);
+            $chatlog.append($botHtml);
+
             
-            if (pdf_doc != 'none' && pdf_doc != 'richang'){
+            if (pdf_doc != 'none'){
                 var $displayHtml = $(pdf_depth);
                 $('#display_board').empty();
                 $displaylog.append($displayHtml);
@@ -102,6 +100,17 @@
            
             }  
             });
+          
+
+          $.get("/qa", { msg: rawText }).done(function(data) {
+            answer = data[0];
+
+            var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
+            $botHtml.find('p').html(answer);
+            $chatlog.append($botHtml);
+
+            });
+
           }
 
         //触发function

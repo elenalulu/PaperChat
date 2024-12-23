@@ -1,3 +1,14 @@
+[**🇨🇳中文**](https://github.com/shibing624/text2vec/blob/master/README_CN.md)
+
+
+<div align="center">
+  <a href="https://github.com/elenalulu/PaperChat">
+    <img src="https://github.com/elenalulu/PaperChat/logo.png" height="150" alt="Logo">
+  </a>
+</div>
+
+-----------------
+
 # PaperChat
 PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu machines. Combining paper understanding and research on mutiple papers. Compiled llama.cpp already. 
 
