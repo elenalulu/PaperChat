@@ -1,6 +1,6 @@
 # PaperChat
 PaperChat, 提供了人人可用的arXiv论文对话机器人，只需要CPU即可运行。支持对论文的关键词理解和对多篇论文的深度挖掘。并且项目提供了已经编译好的llama.cpp，直接解压缩可用。
-
+<br>
 
 <div>
 	<p align="center">
@@ -9,6 +9,7 @@ PaperChat, 提供了人人可用的arXiv论文对话机器人，只需要CPU即�
 </div>
 
 -----------------
+<br>
 
 ## 特点
 
@@ -22,7 +23,7 @@ PaperChat, 提供了人人可用的arXiv论文对话机器人，只需要CPU即�
   <img alt="Animation Demo" src="https://github.com/elenalulu/PaperChat/blob/main/docs/ui.png" width="660" />
   </p>
 </div>
-
+<br>
 
 ## 安装要求
 
@@ -48,19 +49,19 @@ cd chat_ui
 python main.py
 ```
 
-
+<br>
 
 ## 联系方式
 
 <img src="docs/wechat.jpg" width="200" />
 扫码进群，如遇过期请等更新
-
+<br>
 
 ## License
 
 授权协议为 [The Apache License 2.0](LICENSE)，可免费用做商业用途。请在产品说明中附加text2vec的链接和授权协议。
 
-
+<br>
 ## Contribute
 
 项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目

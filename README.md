@@ -2,7 +2,7 @@
 
 # PaperChat
 PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu machines. Combining paper understanding and research on mutiple papers. Compiled llama.cpp already. 
-
+<br>
 
 <div>
 	<p align="center">
@@ -11,6 +11,7 @@ PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu mac
 </div>
 
 -----------------
+<br>
 
 ## Usage
 
