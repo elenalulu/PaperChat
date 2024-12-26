@@ -11,7 +11,6 @@ PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu mac
 </div>
 
 -----------------
-<br>
 
 ## Usage
 
@@ -26,6 +25,7 @@ PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu mac
   </p>
 </div>
 
+<br>
 
 ## Requirements
 
