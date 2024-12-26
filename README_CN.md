@@ -30,7 +30,7 @@ PaperChat, 提供了人人可用的arXiv论文对话机器人，只需要CPU即�
 
 https://modelscope.cn/models/QuantFactory/Qwen2.5-7B-Instruct-GGUF/resolve/master/Qwen2.5-7B-Instruct.Q4_K_M.gguf
 
-
+<br>
 2.解压缩llama_cpp.rar，放在主路径下；并且打开一个Anaconda Prompt，运行: 
 
 ```shell
@@ -39,7 +39,7 @@ cd llama_cpp
 llama-server.exe -m ../Qwen2.5-7B-Instruct.Q4_K_M.gguf -c 2048
 ```
 
-
+<br>
 3.另外打开一个Anaconda Prompt:
 
 ```shell

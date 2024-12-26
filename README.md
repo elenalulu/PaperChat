@@ -32,6 +32,7 @@ PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu mac
 
 https://modelscope.cn/models/QuantFactory/Qwen2.5-7B-Instruct-GGUF/resolve/master/Qwen2.5-7B-Instruct.Q4_K_M.gguf
 
+<br>
 
 2.unzip llama_cpp.rar and put it under the master path:
 
@@ -40,7 +41,7 @@ cd llama_cpp
 
 llama-server.exe -m ../Qwen2.5-7B-Instruct.Q4_K_M.gguf -c 2048
 ```
-
+<br>
 
 3.start another terminal:
 
@@ -50,7 +51,7 @@ cd chat_ui
 python main.py
 ```
 
-
+<br>
 
 ## Contact
 
