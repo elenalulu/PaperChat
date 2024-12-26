@@ -54,7 +54,7 @@ python main.py
 
 ## Contact
 
-<img src="docs/wechat.jpeg" width="200" />
+<img src="docs/wechat.jpg" width="200" />
 
 
 ## License
