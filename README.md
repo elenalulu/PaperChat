@@ -1,7 +1,7 @@
 [**🇨🇳中文**](https://github.com/elenalulu/PaperChat/blob/master/README_CN.md)
 
 # PaperChat
-PaperChat, provide quantized models to chat wtih arXiv papers, to run on cpu machines. Combining paper understanding and research on mutiple papers. Compiled llama.cpp already. 
+PaperChat, provide quantized models to chat with arXiv papers, to run on cpu machines. Combining paper understanding and research on multiple papers. Compiled llama.cpp already. 
 <br>
 
 <div>
