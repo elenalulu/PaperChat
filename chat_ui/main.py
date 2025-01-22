@@ -20,6 +20,7 @@ def pdf_url(query):
 	http_pdf = ''
 		
 	#which paper
+	query = query.replace('what','').replace('which','').replace('when','').replace('how','').replace('is','').replace('are','')
 	content =  query + '. give the keyword of the above query as the format:keyword1&keyword2&keyword3'
 	completion = client.chat.completions.create(
 	model="",
@@ -32,7 +33,7 @@ def pdf_url(query):
 	answer = '' .join(answer)
 	answer = str(answer)
 	answer = answer.lower()
-	print (answer)
+	# print (answer)
 
 
 	keyword_csv = '../label_keyword.csv'
@@ -41,19 +42,18 @@ def pdf_url(query):
 	query_keyword_list = answer.split('&')
 	label_keyword_total = []
 	for query_keyword in query_keyword_list:
+		if query_keyword !='keyword' and query_keyword != 'query':
+			results = df[df['keyword'] == query_keyword]
+			if 'Empty DataFrame' not in str(results):
+				for i in range(0, len(results)):
+					oneline = results[i:(i+1)]
+					label = oneline['label'].values 
+					label = str(label)
+					label = label.replace('[','').replace(']','')
 
-		results = df[df['keyword'] == query_keyword]
-		if 'Empty DataFrame' not in str(results):
-			for i in range(0, len(results)):
-				oneline = results[i:(i+1)]
-				label = oneline['label'].values 
-				label = str(label)
-				label = label.replace('[','').replace(']','')
-
-				label_keyword_dict = {'label': label, 'keyword': query_keyword}
-				label_keyword_total.append(label_keyword_dict)
-				
-
+					label_keyword_dict = {'label': label, 'keyword': query_keyword}
+					label_keyword_total.append(label_keyword_dict)
+					
 	counts = Counter([item['label'] for item in label_keyword_total])
 
 	most_label = counts.most_common(1)
@@ -95,7 +95,7 @@ def language_qa(query, http_pdf, query_keyword_list):
 
 	useful_articles = useful_articles.lower()
 	content = useful_articles + '。answer according to the above content：' + query
-	print (content)
+	# print (content)
 
 	completion = client.chat.completions.create(
 	model="",
