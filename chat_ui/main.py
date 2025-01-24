@@ -65,37 +65,69 @@ def pdf_url(query):
 	http_pdf = 'https://arxiv.org/pdf/' + most_label
 	print (http_pdf)
 
-	dialoge = 'please refer to the paper first→'
+	other_pdf = ''
+	for i in range(0, len(counts)):
+		j = i + 1
+		most_label = counts.most_common(j)
+		most_label = most_label[i]
+		most_label = most_label[0]
+		most_label = most_label.replace("'",'')
 
-	return http_pdf, query_keyword_list, dialoge
+		#request content
+		next_pdf = 'https://arxiv.org/pdf/' + most_label
+		if 0 < i < 4:
+			single_pdf = '<a href="{}" target="_blank">{}</a>'.format(next_pdf, next_pdf)
+			other_pdf += single_pdf + '\n'
+
+	dialoge = 'please refer to the first paper→' + '<br>' + 'you can also click the next papers:<br>' + other_pdf
+
+	return http_pdf, query_keyword_list, dialoge, counts
 
 
-def language_qa(query, http_pdf, query_keyword_list): 
+def language_qa(query, query_keyword_list, counts): 
 	final_answer = ''
-	response = requests.get(http_pdf)
-	 
-	page_contents = []
-	if response.status_code == 200:
-	    pdf_data = response.content
-	    pdf_document = fitz.open("pdf", pdf_data)
-	    
-	    for page_num in range(len(pdf_document)):
-	        page = pdf_document.load_page(page_num)
-	        text = page.get_text()  
-	        page_contents.append(text)
+	useful_sentence = ''
+
+	for i in range(0, len(counts)):
+		if i < 4:
+			j = i + 1
+			most_label = counts.most_common(j)
+			most_label = most_label[i]
+			most_label = most_label[0]
+			most_label = most_label.replace("'",'')
+			now_pdf = 'https://arxiv.org/pdf/' + most_label
+			print (now_pdf)
+
+			try:
+				response = requests.get(now_pdf)	 
+				page_contents = []
+
+				if response.status_code == 200:
+				    pdf_data = response.content
+				    pdf_document = fitz.open("pdf", pdf_data)
+				    
+				    for page_num in range(len(pdf_document)):
+				        page = pdf_document.load_page(page_num)
+				        text = page.get_text()  
+				        page_contents.append(text)
+			except:
+				pass
+
+		for query_keyword in query_keyword_list:
+			for article in page_contents:
+				if query_keyword in article:
+					sentence_list = article.split('\n')
+					for sentence in sentence_list:
+						if query_keyword in sentence and sentence not in useful_sentence:
+							if len(useful_sentence) < 3000: #control length
+								useful_sentence += sentence
+							else:
+								break
 
 
-	useful_articles = ''
-	for query_keyword in query_keyword_list:
-		for article in page_contents:
-			if query_keyword in article and article not in useful_articles:
-				if len(useful_articles) < 3000: #control length
-					useful_articles += article
-
-
-	useful_articles = useful_articles.lower()
-	content = useful_articles + '。answer according to the above content：' + query
-	# print (content)
+	useful_sentence = useful_sentence.lower()
+	content = useful_sentence + '。answer according to the above content：' + query
+	print (content)
 
 	completion = client.chat.completions.create(
 	model="",
@@ -213,7 +245,7 @@ def home():
 @app.route("/url")
 def get_pdf_url():
 	query = request.args.get('msg')
-	http_pdf, query_keyword_list, dialoge = pdf_url(query)
+	http_pdf, query_keyword_list, dialoge, counts = pdf_url(query)
 
 	internet = ''
 	if http_pdf == 'none':
@@ -226,8 +258,8 @@ def get_pdf_url():
 @app.route("/qa")
 def get_doc_response():
 	query = request.args.get('msg')
-	http_pdf, query_keyword_list, dialoge = pdf_url(query)
-	output = language_qa(query, http_pdf, query_keyword_list) 
+	http_pdf, query_keyword_list, dialoge, counts = pdf_url(query)
+	output = language_qa(query, query_keyword_list, counts) 
 
 	return [output]
 
