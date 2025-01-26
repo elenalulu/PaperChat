@@ -60,7 +60,7 @@ python main.py
 
 授权协议为 [The Apache License 2.0](LICENSE)，可免费用做商业用途。请在产品说明中附加text2vec的链接和授权协议。
 
-<br>
+
 ## Contribute
 
 项目代码还很粗糙，如果大家对代码有所改进，欢迎提交回本项目
