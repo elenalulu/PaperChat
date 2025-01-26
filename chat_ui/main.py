@@ -98,10 +98,9 @@ def language_qa(query, query_keyword_list, counts):
 			now_pdf = 'https://arxiv.org/pdf/' + most_label
 			print (now_pdf)
 
+			page_contents = []
 			try:
 				response = requests.get(now_pdf)	 
-				page_contents = []
-
 				if response.status_code == 200:
 				    pdf_data = response.content
 				    pdf_document = fitz.open("pdf", pdf_data)
