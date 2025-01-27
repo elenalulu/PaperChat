@@ -39,20 +39,25 @@ def pdf_url(query):
 	keyword_csv = '../label_keyword.csv'
 	df = pd.read_csv(keyword_csv)
 
-	query_keyword_list = answer.split('&')
+	query_split = answer.split('&')
+	query_keyword_list = []
+	for query_keyword in query_split:
+		if query_keyword !='keyword' and query_keyword != 'query':
+			query_keyword_list.append(query_keyword)
+	print (query_keyword_list)
+
 	label_keyword_total = []
 	for query_keyword in query_keyword_list:
-		if query_keyword !='keyword' and query_keyword != 'query':
-			results = df[df['keyword'] == query_keyword]
-			if 'Empty DataFrame' not in str(results):
-				for i in range(0, len(results)):
-					oneline = results[i:(i+1)]
-					label = oneline['label'].values 
-					label = str(label)
-					label = label.replace('[','').replace(']','')
+		results = df[df['keyword'] == query_keyword]
+		if 'Empty DataFrame' not in str(results):
+			for i in range(0, len(results)):
+				oneline = results[i:(i+1)]
+				label = oneline['label'].values 
+				label = str(label)
+				label = label.replace('[','').replace(']','')
 
-					label_keyword_dict = {'label': label, 'keyword': query_keyword}
-					label_keyword_total.append(label_keyword_dict)
+				label_keyword_dict = {'label': label, 'keyword': query_keyword}
+				label_keyword_total.append(label_keyword_dict)
 					
 	counts = Counter([item['label'] for item in label_keyword_total])
 
@@ -97,8 +102,6 @@ def language_qa(query, query_keyword_list, counts):
 			most_label = most_label.replace("'",'')
 			now_pdf = 'https://arxiv.org/pdf/' + most_label
 			print (now_pdf)
-			response = requests.get(now_pdf)
-			print (response.status_code)
 
 			try:
 				response = requests.get(now_pdf)	 
@@ -117,17 +120,19 @@ def language_qa(query, query_keyword_list, counts):
 
 		for query_keyword in query_keyword_list:
 			for article in page_contents:
+				article = article.lower()
 				if query_keyword in article:
 					sentence_list = article.split('\n')
 					for sentence in sentence_list:
 						if query_keyword in sentence and sentence not in useful_sentence:
-							if len(useful_sentence) < 10000: #control length
+							if len(useful_sentence) < 5000: #control length
 								useful_sentence += sentence
 							else:
 								break
 
 
 	useful_sentence = useful_sentence.lower()
+	query = query.lower()
 	content = useful_sentence + '。answer according to the above content：' + query
 	print (content)
 
@@ -138,8 +143,7 @@ def language_qa(query, query_keyword_list, counts):
 	]
 	)
 	output = completion.choices[0].message
-	answer = str(output).replace('ChatCompletionMessage(content="','').replace("role='assistant', function_call=None, tool_calls=None)",'').replace('",','')
-	answer = '' .join(answer)
+	answer = output.content
 	answer = str(answer)
 
 	if answer != '':
