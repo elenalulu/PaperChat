@@ -97,10 +97,13 @@ def language_qa(query, query_keyword_list, counts):
 			most_label = most_label.replace("'",'')
 			now_pdf = 'https://arxiv.org/pdf/' + most_label
 			print (now_pdf)
+			response = requests.get(now_pdf)
+			print (response.status_code)
 
-			page_contents = []
 			try:
 				response = requests.get(now_pdf)	 
+				page_contents = []
+
 				if response.status_code == 200:
 				    pdf_data = response.content
 				    pdf_document = fitz.open("pdf", pdf_data)
@@ -118,7 +121,7 @@ def language_qa(query, query_keyword_list, counts):
 					sentence_list = article.split('\n')
 					for sentence in sentence_list:
 						if query_keyword in sentence and sentence not in useful_sentence:
-							if len(useful_sentence) < 3000: #control length
+							if len(useful_sentence) < 10000: #control length
 								useful_sentence += sentence
 							else:
 								break
@@ -135,7 +138,7 @@ def language_qa(query, query_keyword_list, counts):
 	]
 	)
 	output = completion.choices[0].message
-	answer = re.findall(r"content='(.+?)'", str(output))
+	answer = str(output).replace('ChatCompletionMessage(content="','').replace("role='assistant', function_call=None, tool_calls=None)",'').replace('",','')
 	answer = '' .join(answer)
 	answer = str(answer)
 
@@ -167,7 +170,6 @@ def internet_result(query):
 	output = ''
 	baidu_list = []
 	for result in results:
-		#6天前这种剔除了，可以考虑加进来
 		if count<10 and '股票行情' not in str(result) and '<div class="c-container"' in str(result) and '<div class="result c-container' not in str(result):
 			result = str(result).replace('\n','')
 
