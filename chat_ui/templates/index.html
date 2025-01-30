@@ -22,11 +22,12 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-         
+
+
          <li class="nav-item">
-          <a id='board_click' class="nav-link active" href="#board" onclick="showAndHidden2()">PaperChat</a>
+          <a id='board_click' class="nav-link active" href="#board" style="color: grey;" onclick="showAndHidden2()">click here to add local files</a>
          </li>
-          
+
 
         </ul>
       </div>
@@ -34,46 +35,58 @@
     <!-- nav end-->
 
 
-    
     <!-- chatbox-->
     <div>
-      
-      <div id="chat_board" class="py-2 px-1">
-        <div  class="left col-5 px-5 py-5 chat-box js-chat-board bg-white">
+      <div id="chat_gen" style="display:block" class="py-2 px-1">
+        <div  class="left col-5 px-5 py-5 chat-box js-chat-gen bg-white">
           <div class="media w-90 mb-1"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle">
             <div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p><a>
             your question, please~
-          </p></a></div></div></div>
+          </a></div></div></div>
         </div>
 
-
-        <div id="display_board" class="right col-7 px-1 py-0 display-box js-display-board">
-          <div class="ml-4"><div class="py-2 px-3 mb-2" style="font-size:15px"><p class="text-large mb-0 user-message text-left">
+        <div id="display_gen" style="display:block" class="right col-7 px-1 py-0 display-box js-display-gen">
+          <div class="ml-4"><div class="py-2 px-3 mb-2" style="font-size:15px"><p class="text-small mb-0 user-message text-left">        
           </p></div></div>
         </div>
 
-
-        <div id="userInput_board" class="left col-5 input-group input-group-lg mt-1 bg-white">
-          <input id="textInput_board" type="text" name="msg" placeholder="点此聊天..." class="form-control js-text">
-          <input id="buttonInput_board" type="submit" value="发送">
+        <div id="userInput_gen" class="left col-5 input-group input-group-lg mt-1 bg-white">
+          <input id="textInput_gen" type="text" name="msg" placeholder="点此聊天..." class="form-control js-text">
+          <input id="buttonInput_gen" type="submit" value="发送">
         </div>
       </div>
 
 
       <script>   
 
-        function boardBotResponse() {
-          var $chatlog = $('.js-chat-board');
-          var $displaylog = $('.js-display-board');
-          var rawText = $("#textInput_board").val();
+        var globalVariable = 'off'
+
+        function showAndHidden2(){ 
+          var p5=document.getElementById("board_click"); 
+          p5.style.color='white';
+          globalVariable = 'turnon'
+          } 
+
+
+        function genBotResponse() {
+          var $chatlog = $('.js-chat-gen');
+          var $displaylog = $('.js-display-gen');
+          var rawText = $("#textInput_gen").val();
+
+          if (globalVariable == 'turnon'){
+                var addText = rawText + '&&&'
+            }; 
+          if (globalVariable == 'off'){
+                var addText = rawText
+            }; 
 
           var userHtml = '<div class="media w-90 mb-3"><img src="/static/vip.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"><span>' + rawText + '</span></p></div></div></div>';
-          $("#textInput_board").val("");
+          $("#textInput_gen").val("");
           $chatlog.append(userHtml);
           $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
 
 
-          $.get("/url", { msg: rawText }).done(function(data) {
+          $.get("/url", { msg: addText }).done(function(data) {
             pdf_doc = data[0];
             dialoge = data[2]
             internet = data[3];
@@ -88,40 +101,37 @@
             
             if (pdf_doc != 'none'){
                 var $displayHtml = $(pdf_depth);
-                $('#display_board').empty();
+                $('#display_gen').empty();
                 $displaylog.append($displayHtml);
            
             };           
             if (pdf_doc == 'none'){
                 var $displayHtml = $(internet_result);
                 $displayHtml.find('p').html(internet);
-                $('#display_board').empty();
+                $('#display_gen').empty();
                 $displaylog.append($displayHtml);
-           
             }  
             });
           
 
-          $.get("/qa", { msg: rawText }).done(function(data) {
+          $.get("/qa", { msg: addText }).done(function(data) {
             answer = data[0];
 
             var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
             $botHtml.find('p').html(answer);
             $chatlog.append($botHtml);
-
             });
-
           }
 
-        //function
-        $("#textInput_board").keypress(function(e) {
+ 
+        //触发function
+        $("#textInput_gen").keypress(function(e) {
             if(e.which == 13) {
-                boardBotResponse();}
+                genBotResponse();}
           });
 
-
-        $("#buttonInput_board").click(function() {
-            boardBotResponse();
+        $("#buttonInput_gen").click(function() {
+            genBotResponse();
           });
         
       </script>  
