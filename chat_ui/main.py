@@ -17,8 +17,8 @@ client = openai.OpenAI(
 
 
 def pdf_url(query): 
-
-    query = query.replace('what','').replace('which','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','')
+    query = query.lower()
+    query = query.replace('what','').replace('which','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','').replace('-',' ').replace('_',' ')
     query_split = query.split(' ')
 
     query_keyword_list = []
@@ -97,12 +97,13 @@ def pdf_url(query):
 
 
 def language_qa(query, query_keyword_list, url_list): 
+    query = query.lower()
     final_answer = ''
     useful_sentence = ''
 
-    page_contents = []
+    # page_contents = []
     for i in range(0, min(4,len(url_list))):
-        if len(useful_sentence) < 5000:
+        if len(useful_sentence) < 5000: #control length
             biaoshi = url_list[i]
             now_pdf = 'https://arxiv.org/pdf/' + biaoshi
             print (now_pdf)
@@ -118,25 +119,19 @@ def language_qa(query, query_keyword_list, url_list):
                     for page_num in range(len(pdf_document)):
                         page = pdf_document.load_page(page_num)
                         text = page.get_text()  
-                        page_contents.append(text)
+                        text = text.lower()
+                
+                        for query_keyword in query_keyword_list:
+                            if query_keyword in text:
+                                sentence_list = text.split('\n')
+                                for sentence in sentence_list:
+                                    if query_keyword in sentence and sentence not in useful_sentence:
+                                            useful_sentence += sentence
+
             except:
                 pass
-
-    for query_keyword in query_keyword_list:
-        for article in page_contents:
-            article = article.lower()
-            if query_keyword in article:
-                sentence_list = article.split('\n')
-                for sentence in sentence_list:
-                    if query_keyword in sentence and sentence not in useful_sentence:
-                        if len(useful_sentence) < 5000: #control length
-                            useful_sentence += sentence
-                        else:
-                            break
-
-
-    useful_sentence = useful_sentence.lower()
-    query = query.lower()
+                
+    
     content = useful_sentence + '。answer the following query according to the above content in short sentences：' + query
     print (content)
 
