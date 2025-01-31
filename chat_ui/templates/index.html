@@ -41,7 +41,7 @@
         <div  class="left col-5 px-5 py-5 chat-box js-chat-gen bg-white">
           <div class="media w-90 mb-1"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle">
             <div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p><a>
-            your question, please~
+            I can reply faster in English~
           </a></div></div></div>
         </div>
 
@@ -117,9 +117,11 @@
           $.get("/qa", { msg: addText }).done(function(data) {
             answer = data[0];
 
-            var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
-            $botHtml.find('p').html(answer);
-            $chatlog.append($botHtml);
+            if (answer != 'none'){
+                var $botHtml = $('<div class="media w-90 mb-3"><img src="/static/laiteng.jpg" alt="user" width="40" class="rounded-circle"><div class="ml-4"><div class="bg-light rounded py-2 px-3 mb-2"><p class="text-small mb-0 user-message text-left"></p></div></div></div>');
+                $botHtml.find('p').html(answer);
+                $chatlog.append($botHtml);
+            } 
             });
           }
 
