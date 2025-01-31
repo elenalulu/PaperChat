@@ -18,7 +18,7 @@ client = openai.OpenAI(
 
 def pdf_url(query): 
     query = query.lower()
-    query = query.replace('what','').replace('which','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','').replace('-',' ').replace('_',' ')
+    query = query.replace("what's",'').replace('what','').replace('who','').replace('whose','').replace('whom','').replace('where','').replace('which','').replace('why','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','').replace('-',' ').replace('_',' ')
     query_split = query.split(' ')
 
     query_keyword_list = []
@@ -43,7 +43,7 @@ def pdf_url(query):
         if single_word != '':
             query_keyword_list.append(single_word)
 
-    query_keyword_list = query_keyword_list[0:3]
+    query_keyword_list = query_keyword_list[0:3] #control keyword number
 
     keyword = ''
     for item in query_keyword_list:
@@ -81,10 +81,10 @@ def pdf_url(query):
         http_pdf = 'https://arxiv.org/pdf/' + most_label
 
         for k in range(0, min(3,len(url_list))):
-            k += 1
-            next_pdf = 'https://arxiv.org/pdf/' + url_list[k]
-            single_pdf = '<a href="{}" target="_blank">{}</a>'.format(next_pdf, next_pdf)
-            other_pdf += single_pdf + '\n'
+            if k > 0:
+                next_pdf = 'https://arxiv.org/pdf/' + url_list[k]
+                single_pdf = '<a href="{}" target="_blank">{}</a>'.format(next_pdf, next_pdf)
+                other_pdf += single_pdf + '\n'
 
         dialoge = 'please refer to the first paper→' + '<br>' + 'you can also click the next papers:<br>' + other_pdf
 
@@ -100,39 +100,49 @@ def language_qa(query, query_keyword_list, url_list):
     query = query.lower()
     final_answer = ''
     useful_sentence = ''
+    
+    total_list = []
+    for i in range(0, len(query_keyword_list)):
+        list_i = []
 
-    # page_contents = []
     for i in range(0, min(4,len(url_list))):
-        if len(useful_sentence) < 5000: #control length
+        if len(useful_sentence) < 6000: #control total length
             biaoshi = url_list[i]
-            now_pdf = 'https://arxiv.org/pdf/' + biaoshi
+            now_pdf = 'https://arxiv.org/html/' + biaoshi
             print (now_pdf)
 
-            try:
-                response = requests.get(now_pdf)     
-                page_contents = []
+            res = requests.get(now_pdf)
+            res.encoding = 'utf-8'
+            page = res.text
 
-                if response.status_code == 200:
-                    pdf_data = response.content
-                    pdf_document = fitz.open("pdf", pdf_data)
-                    
-                    for page_num in range(len(pdf_document)):
-                        page = pdf_document.load_page(page_num)
-                        text = page.get_text()  
-                        text = text.lower()
+            soup = BeautifulSoup(page,"lxml")
+            text = soup.get_text()
+            text = text.lower()
                 
-                        for query_keyword in query_keyword_list:
-                            if query_keyword in text:
-                                sentence_list = text.split('\n')
-                                for sentence in sentence_list:
-                                    if query_keyword in sentence and sentence not in useful_sentence:
-                                            useful_sentence += sentence
+            for i in range(0, len(query_keyword_list)):
+                single_sentence = ''
+                keyword_i = query_keyword_list[i]
 
-            except:
-                pass
-                
-    
+                if keyword_i in text:
+                    sentence_list = text.split('\n')
+                    for sentence in sentence_list:
+                        if keyword_i in sentence:
+
+                            if sentence not in list_i and len(single_sentence) < 2000: #control single length
+                                list_i.append(sentence)
+
+                                if sentence not in total_list:
+                                    total_list.append(sentence)
+                                    for item in total_list:
+                                        useful_sentence += item
+
+                                for item in list_i:
+                                    single_sentence += item
+
+            
+
     content = useful_sentence + '。answer the following query according to the above content in short sentences：' + query
+    content = useful_sentence + '。answer the following query according to the above content in medium sentences：' + query
     print (content)
 
     completion = client.chat.completions.create(
