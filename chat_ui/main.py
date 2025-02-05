@@ -18,11 +18,12 @@ client = openai.OpenAI(
 
 app = Flask(__name__)
 
-#全局变量
+#global variable
 http_pdf = ''
 query_keyword_list = []
 dialoge = ''
 url_list = []
+
 
 def pdf_url(query): 
     query = query.lower()
