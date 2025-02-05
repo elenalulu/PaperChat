@@ -1,13 +1,12 @@
 # coding: utf-8
 from flask import Flask, render_template, request
-import os, time, re, datetime, shutil
+import os, time, re, shutil
 import openai
-import pdfplumber
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from collections import Counter
-import fitz 
+from flask_caching import Cache
 
 
 client = openai.OpenAI(
@@ -16,12 +15,22 @@ client = openai.OpenAI(
 )
 
 
+
+app = Flask(__name__)
+
+#全局变量
+http_pdf = ''
+query_keyword_list = []
+dialoge = ''
+url_list = []
+
 def pdf_url(query): 
     query = query.lower()
-    query = query.replace("what's",'').replace('what','').replace('who','').replace('whose','').replace('whom','').replace('where','').replace('which','').replace('why','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','').replace('-',' ').replace('_',' ')
+    query = query.replace("what's",'').replace('what','').replace('who','').replace('whose','').replace('whom','').replace('where','').replace('which','').replace('why','').replace('when','').replace('how','').replace('is','').replace('are','').replace('of','').replace('difference','').replace('tell','').replace('me','').replace('and','').replace('-',' ').replace('_',' ').replace('idea','').replace('old','').replace('new','')
     query_split = query.split(' ')
 
-    query_keyword_list = []
+    # query_keyword_list = []
+    global query_keyword_list
     not_list = []
     for single_word in query_split:
         if single_word != '':
@@ -64,7 +73,8 @@ def pdf_url(query):
 
     i = 0
     most_label = 'none'
-    url_list = []
+    # url_list = []
+    global url_list
     other_pdf = ''
 
     for i in range(0, min(4,len(arxiv_result))):
@@ -140,10 +150,8 @@ def language_qa(query, query_keyword_list, url_list):
                                     single_sentence += item
 
             
-
-    content = useful_sentence + '。answer the following query according to the above content in short sentences：' + query
     content = useful_sentence + '。answer the following query according to the above content in medium sentences：' + query
-    print (content)
+    # print (content)
 
     completion = client.chat.completions.create(
     model="",
@@ -228,8 +236,6 @@ def internet_result(query):
 
 
 
-app = Flask(__name__)
-
 
 @app.route("/")
 def home():
@@ -251,7 +257,7 @@ def get_pdf_url():
 @app.route("/qa")
 def get_doc_response():
     query = request.args.get('msg')
-    http_pdf, query_keyword_list, dialoge, url_list = pdf_url(query)
+    
 
     if http_pdf != 'none':
         output = language_qa(query, query_keyword_list, url_list) 
